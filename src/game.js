@@ -16,6 +16,13 @@ export class Game {
     this.enemySpriteLoaded = false;
     this.enemySprite.onload = () => { this.enemySpriteLoaded = true; };
     
+    // Game progression variables
+    this.gameTime = 0;          // Tracks total game time
+    this.spawnInterval = 2500;  // Start with 2.5 seconds between spawns
+    this.minSpawnInterval = 1200; // Minimum spawn interval (fastest) - more forgiving
+    this.lastSpawnTime = 0;     // Last enemy spawn time
+    this.difficulty = 1;        // Difficulty multiplier
+    
     // Game state (menu, playing, paused, or gameOver)
     this.gameState = 'menu';  // 'menu', 'playing', 'paused', or 'gameOver'
     
@@ -64,7 +71,11 @@ export class Game {
   
   startGame() {
     this.gameState = 'playing';
-    this._spawnTestEnemy();
+    this.gameTime = 0;
+    this.lastSpawnTime = 0;
+    this.spawnInterval = 2000;
+    this.difficulty = 1;
+    this.enemies = [];
   }
   
   _loop(ts) {
@@ -83,8 +94,27 @@ export class Game {
   }
   update(dt) {
     if (this.gameState === 'playing') {
+      // Update game time and difficulty
+      this.gameTime += dt;
+      // Increase difficulty every 45 seconds, cap at level 5
+      this.difficulty = Math.min(5, 1 + Math.floor(this.gameTime / 45));
+      
+      // Update game objects
       this.player.update(dt);
       this.bullets.update(dt);
+      
+      // Update spawn interval based on time (gradually decrease to minimum)
+      this.spawnInterval = Math.max(
+        this.minSpawnInterval,
+        2500 - (this.gameTime * 25)  // Decrease by 25ms per second (slower progression)
+      );
+      
+      // Check if it's time to spawn a new enemy
+      if (this.gameTime - this.lastSpawnTime >= this.spawnInterval/1000) {
+        this._spawnEnemy();
+        this.lastSpawnTime = this.gameTime;
+      }
+      
       // basic enemy movement
       for (let i=this.enemies.length-1;i>=0;i--) {
         const e = this.enemies[i]; e.x += e.vx*dt; e.y += e.vy*dt;
@@ -242,37 +272,43 @@ export class Game {
       this.player.render(ctx);
     }
   }
-  _spawnTestEnemy() {
-    const baseWidth = 42;    // base enemy width (increased from 28)
-    const baseHeight = 27;   // base enemy height (increased from 18)
-    const baseSpeed = 80;    // base horizontal speed (unchanged)
+  _spawnEnemy() {
+    const baseWidth = 42;    // base enemy width
+    const baseHeight = 27;   // base enemy height
+    const baseSpeed = 80;    // base horizontal speed
     const basePoints = 100;  // base points value
     
-    // simple enemy spawner for MVP
-    setInterval(() => {
-      // Random scale between 0.8 (smaller) and 1.2 (bigger)
-      const scale = 0.8 + Math.random() * 0.4;  // 0.8 to 1.2
-      
-      // Inverse relationship between size and speed
-      // Smaller enemies (0.8) are 50% faster
-      // Larger enemies (1.2) are 50% slower
-      const speedMultiplier = 2 - scale; // 1.2 when small (0.8 scale), 0.8 when large (1.2 scale)
-      
-      // Points inverse to size - smaller enemies worth more
-      // Small enemies (0.8) worth 150% points
-      // Large enemies (1.2) worth 50% points
-      const pointsMultiplier = 2 - scale;
-      
-      this.enemies.push({
-        x: 820,
-        y: 50 + Math.random()*500,
-        vx: -(baseSpeed + Math.random()*80) * speedMultiplier, // Faster when smaller
-        vy: 0,
-        w: Math.round(baseWidth * scale),   // scaled width
-        h: Math.round(baseHeight * scale),  // scaled height
-        scale: scale,                       // store scale for future use
-        points: Math.round(basePoints * pointsMultiplier) // more points for smaller enemies
-      });
-    }, 900);
+    // Random scale between 0.8 (smaller) and 1.2 (bigger)
+    const scale = 0.8 + Math.random() * 0.4;
+    
+    // Speed adjustments
+    const speedMultiplier = (2 - scale) * this.difficulty; // Faster with difficulty
+    
+    // Points multiplier based on size and difficulty
+    const pointsMultiplier = (2 - scale) * this.difficulty;
+    
+    // Find a safe spawn position
+    let safeY;
+    let attempts = 0;
+    const maxAttempts = 10;
+    
+    do {
+      safeY = 50 + Math.random() * 500;
+      // Check if this position is far enough from other enemies
+      const isSafe = this.enemies.every(e => Math.abs(e.y - safeY) > 50);
+      if (isSafe) break;
+      attempts++;
+    } while (attempts < maxAttempts);
+    
+    this.enemies.push({
+      x: 820,
+      y: safeY,
+      vx: -(baseSpeed + Math.random()*40) * speedMultiplier, // Base speed + difficulty scaling
+      vy: Math.sin(this.gameTime + Math.random() * Math.PI) * 20, // Slight vertical movement
+      w: Math.round(baseWidth * scale),
+      h: Math.round(baseHeight * scale),
+      scale: scale,
+      points: Math.round(basePoints * pointsMultiplier)
+    });
   }
 }
