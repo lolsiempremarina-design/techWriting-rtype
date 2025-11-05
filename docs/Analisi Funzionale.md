@@ -1,5 +1,4 @@
-## 📝 Analisi Funzionale: R-Type Replica (Gruppo E)
-
+## 📝 Analisi Funzionale: R-Type Replica
 L'obiettivo di questo documento è descrivere il **comportamento dell'utente, le interazioni e le logiche di gioco** del prodotto, rispondendo alla domanda: *"Cosa vedrà e farà l'utente?"*.
 
 ---
