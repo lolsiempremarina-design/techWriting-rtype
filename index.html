@@ -1,0 +1,18 @@
+<!doctype html>
+<html lang="it">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>R-Type - MVP (Canvas)</title>
+    <style>
+      html,body { height:100%; margin:0; background:#000; color:#fff; font-family:monospace }
+      #gameCanvas { display:block; margin:0 auto; background:#001; image-rendering: pixelated }
+      #overlay { position:fixed; left:10px; top:10px }
+    </style>
+  </head>
+  <body>
+    <canvas id="gameCanvas" width="800" height="600"></canvas>
+    <div id="overlay"></div>
+    <script type="module" src="./src/main.js"></script>
+  </body>
+</html>
