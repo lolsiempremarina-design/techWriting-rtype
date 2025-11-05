@@ -2,12 +2,18 @@ import { Force } from './force.js';
 
 export class Player {
   constructor(x,y, input, bullets) {
-    this.x = x; this.y = y; this.w = 32; this.h = 16;
+    this.x = x; this.y = y; this.w = 64; this.h = 32;  // increased size to 64x32 (2x original size)
     this.speed = 200; this.input = input; this.bullets = bullets;
     this.shootCooldown = 0; this.shootRate = 0.12;
     this.charge = 0; this.chargeMax = 1.5; this.charging = false;
     this.lives = 3; this.score = 0;
     this.force = new Force(this);
+    // load ship sprite from project img folder
+    this.sprite = new Image();
+    this.spriteLoaded = false;
+    // path relative to index.html
+    this.sprite.src = 'img/navicella.png';
+    this.sprite.onload = () => { this.spriteLoaded = true; };
   }
   update(dt) {
     let dx=0, dy=0;
@@ -51,9 +57,20 @@ export class Player {
     this.force.update(dt);
   }
   render(ctx) {
-    // ship
-    ctx.fillStyle = '#0ff';
-    ctx.fillRect(this.x-16,this.y-8,this.w,this.h);
+    // ship: draw sprite scaled to player size (32x16) when loaded, otherwise fallback to rectangle
+    if (this.sprite && this.spriteLoaded) {
+      // scale sprite to match player hitbox (this.w x this.h = 32x16 pixels)
+      // and center it on player position (this.x, this.y)
+      ctx.drawImage(this.sprite, 
+        this.x - this.w/2,  // center horizontally
+        this.y - this.h/2,  // center vertically
+        this.w,             // width = 32
+        this.h              // height = 16
+      );
+    } else {
+      ctx.fillStyle = '#0ff';
+      ctx.fillRect(this.x-16,this.y-8,this.w,this.h);
+    }
     // charge bar
     ctx.fillStyle = '#444'; ctx.fillRect(10,560,120,12);
     ctx.fillStyle = '#f90'; ctx.fillRect(10,560, 120*(this.charge/this.chargeMax),12);

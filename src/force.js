@@ -32,7 +32,6 @@ export class Force {
     this.y = Math.max(0, Math.min(600, this.y));
   }
   render(ctx) {
-    ctx.fillStyle = '#f0f';
-    ctx.beginPath(); ctx.arc(this.x, this.y, 10, 0, Math.PI*2); ctx.fill();
+    // Force rendering disabled
   }
 }
