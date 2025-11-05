@@ -1,7 +1,9 @@
 export class BulletManager {
-  constructor() {
+  constructor(logicalWidth = 800, logicalHeight = 600) {
     this.pool = [];
     this.active = [];
+    this.logicalWidth = logicalWidth;
+    this.logicalHeight = logicalHeight;
     this._initPool(100);
   }
   _initPool(n) {
@@ -20,8 +22,9 @@ export class BulletManager {
     for (let i=this.active.length-1;i>=0;i--) {
       const b = this.active[i];
       b.x += b.vx*dt; b.y += b.vy*dt;
-      // deactivate if off screen
-      if (b.x < -50 || b.x > 1000 || b.y < -50 || b.y > 1000) this._deactivate(i);
+      // deactivate if off logical game area (+margin)
+      const margin = 50;
+      if (b.x < -margin || b.x > this.logicalWidth + margin || b.y < -margin || b.y > this.logicalHeight + margin) this._deactivate(i);
     }
   }
   _deactivate(index) {

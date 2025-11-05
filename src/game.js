@@ -4,10 +4,40 @@ import { Player } from './player.js';
 
 export class Game {
   constructor(canvas) {
-    this.canvas = canvas; this.ctx = canvas.getContext('2d');
-    this.input = new Input();
-    this.bullets = new BulletManager();
-    this.player = new Player(120, 300, this.input, this.bullets);
+    this.canvas = canvas;
+    this.ctx = canvas.getContext('2d');
+    
+  // Logical game size (16:9) used for game logic and rendering
+  this.baseWidth = 1280;
+  this.baseHeight = 720;
+
+  // Set initial canvas size to window size
+  this.canvas.width = window.innerWidth;
+  this.canvas.height = window.innerHeight;
+  // compute initial scale factors and uniform scale
+  this.scaleX = this.canvas.width / this.baseWidth;
+  this.scaleY = this.canvas.height / this.baseHeight;
+  this.scale = Math.min(this.scaleX, this.scaleY);
+  this.offsetX = (this.canvas.width - this.baseWidth * this.scale) / 2;
+  this.offsetY = (this.canvas.height - this.baseHeight * this.scale) / 2;
+    
+    // Add window resize listener
+    window.addEventListener('resize', () => {
+  this.canvas.width = window.innerWidth;
+  this.canvas.height = window.innerHeight;
+  // update scale factors and uniform scale and offsets when canvas size changes
+  this.scaleX = this.canvas.width / this.baseWidth;
+  this.scaleY = this.canvas.height / this.baseHeight;
+  this.scale = Math.min(this.scaleX, this.scaleY);
+  this.offsetX = (this.canvas.width - this.baseWidth * this.scale) / 2;
+  this.offsetY = (this.canvas.height - this.baseHeight * this.scale) / 2;
+  if (this.gameState === 'menu') this.updateMenuPositions();
+    });
+    
+  this.input = new Input();
+  // pass logical bounds to BulletManager so bullets respect logical game area
+  this.bullets = new BulletManager(this.baseWidth, this.baseHeight);
+  this.player = new Player(this.baseWidth * 0.15, this.baseHeight * 0.5, this.input, this.bullets, this.baseWidth, this.baseHeight);
     this.lastTime = 0; this.accumulator = 0; this.FIXED_DT = 1/60;
     this.enemies = [];
     // load enemy sprite
@@ -66,6 +96,9 @@ export class Game {
         }
       }
     });
+    // ensure menu positions are initialized
+    this.mouseX = -1; this.mouseY = -1;
+    this.updateMenuPositions();
   }
   start() { window.requestAnimationFrame(this._loop.bind(this)); }
   
@@ -182,37 +215,94 @@ export class Game {
   _aabb(x1,y1,w1,h1,x2,y2,w2,h2) {
     return x1 < x2 + w2 && x1 + w1 > x2 && y1 < y2 + h2 && y1 + h1 > y2;
   }
+  // (resizeCanvas removed - canvas is sized directly to window and menu positions
+  // are updated in the resize listener)
+
+  updateMenuPositions() {
+    // Calculate positions based on game area
+    const buttonWidth = 250;  // Increased button width
+    const buttonHeight = 60;  // Increased button height
+    const spacing = 70;       // Increased spacing between elements
+
+    // Position title and start button with more space
+    this.titlePosition = {
+      x: this.canvas.width / 2,
+      y: this.canvas.height * 0.2  // Title at 20% from top
+    };
+
+    this.startButton = {
+      x: (this.canvas.width - buttonWidth) / 2,
+      y: this.canvas.height * 0.35,  // Start button at 35% from top
+      width: buttonWidth,
+      height: buttonHeight
+    };
+
+    // Controls section starts lower with more spacing
+    const controlsStartY = this.canvas.height * 0.55;  // Controls start at 55% from top
+
+    // Store control positions for click detection with increased spacing
+    this.controlButtons = [
+      {
+        text: 'Controls:',
+        x: this.canvas.width / 2,
+        y: controlsStartY
+      },
+      {
+        text: 'Arrow Keys / WASD - Move',
+        x: this.canvas.width / 2,
+        y: controlsStartY + spacing
+      },
+      {
+        text: 'Z/X/C - Shoot',
+        x: this.canvas.width / 2,
+        y: controlsStartY + spacing * 2
+      },
+      {
+        text: 'SPACE - Charge Shot',
+        x: this.canvas.width / 2,
+        y: controlsStartY + spacing * 3
+      },
+      {
+        text: 'F - Toggle Force',
+        x: this.canvas.width / 2,
+        y: controlsStartY + spacing * 4
+      }
+    ];
+  }
+
   render() {
     const ctx = this.ctx;
-    ctx.clearRect(0,0,this.canvas.width,this.canvas.height);
     
-    // background
+    // Reset transform and clear canvas
+    ctx.setTransform(1, 0, 0, 1, 0, 0);
+    ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+    
+    // Draw background
     ctx.fillStyle = '#001020';
-    ctx.fillRect(0,0,this.canvas.width,this.canvas.height);
-    
+    ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
+
     if (this.gameState === 'menu') {
-      // Title
+      // Menu rendering
       ctx.fillStyle = '#fff';
-      ctx.font = 'bold 48px Arial';
+      ctx.font = 'bold 64px Arial';
       ctx.textAlign = 'center';
-      ctx.fillText('R-Type', this.canvas.width/2, 120);
-      
-      // Start button
+      ctx.fillText('R-Type', this.canvas.width/2, this.canvas.height * 0.2);
+
+      // Start button (use computed positions)
       const isHovered = this.mouseX >= this.startButton.x && 
-                       this.mouseX <= this.startButton.x + this.startButton.width &&
-                       this.mouseY >= this.startButton.y && 
-                       this.mouseY <= this.startButton.y + this.startButton.height;
-      
+                        this.mouseX <= this.startButton.x + this.startButton.width &&
+                        this.mouseY >= this.startButton.y && 
+                        this.mouseY <= this.startButton.y + this.startButton.height;
+
       ctx.fillStyle = isHovered ? '#4488ff' : '#2266dd';
       ctx.fillRect(this.startButton.x, this.startButton.y, this.startButton.width, this.startButton.height);
       
       ctx.fillStyle = '#fff';
-      ctx.font = '24px Arial';
-      ctx.textAlign = 'center';
-      ctx.fillText('Start Game', this.startButton.x + this.startButton.width/2, this.startButton.y + 33);
-      
+      ctx.font = '30px Arial';
+      ctx.fillText('Start Game', this.startButton.x + this.startButton.width/2, this.startButton.y + this.startButton.height * 0.65);
+
       // Controls
-      ctx.font = '18px Arial';
+      ctx.font = '24px Arial';
       ctx.fillStyle = '#aaa';
       const controls = [
         'Controls:',
@@ -221,26 +311,56 @@ export class Game {
         'SPACE - Charge Shot',
         'F - Toggle Force'
       ];
+      
       controls.forEach((text, i) => {
-        ctx.fillText(text, this.canvas.width/2, 400 + i * 30);
+        ctx.fillText(text, this.canvas.width/2, this.canvas.height * 0.55 + (i * 50));
       });
-    } else if (this.gameState === 'paused') {
-      // Draw paused game state
-      ctx.fillStyle = 'rgba(0, 0, 0, 0.5)';  // semi-transparent overlay
+    } else if (this.gameState === 'playing' || this.gameState === 'paused') {
+      // Game rendering: map logical 1280x720 coords to canvas using uniform scale
+      ctx.save();
+      ctx.setTransform(this.scale, 0, 0, this.scale, this.offsetX, this.offsetY);
+      // Draw enemies (in logical coordinates)
+      for (const e of this.enemies) {
+        if (this.enemySprite && this.enemySpriteLoaded) {
+          ctx.drawImage(this.enemySprite,
+            e.x - e.w/2,
+            e.y - e.h/2,
+            e.w,
+            e.h
+          );
+        } else {
+          ctx.fillStyle = '#f00';
+          ctx.fillRect(e.x-e.w/2, e.y-e.h/2, e.w, e.h);
+        }
+      }
+  // Draw bullets and player in logical coords
+  this.bullets.render(ctx);
+  this.player.renderShip(ctx);
+      ctx.restore();
+
+      // If paused, draw overlay and text in screen coordinates (no transform)
+      if (this.gameState === 'paused') {
+        ctx.fillStyle = 'rgba(0, 0, 0, 0.7)';
+        ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
+        ctx.fillStyle = '#fff';
+        ctx.font = 'bold 48px Arial';
+        ctx.textAlign = 'center';
+        ctx.fillText('PAUSED', this.canvas.width/2, this.canvas.height * 0.4);
+        ctx.font = '28px Arial';
+        ctx.fillText('Press ESC to continue', this.canvas.width/2, this.canvas.height * 0.5);
+      }
+    }
+    // After rendering game area, draw HUD in screen coordinates
+    if (this.gameState === 'playing' || this.gameState === 'paused') {
+      // HUD: draw using screen coords
+      ctx.setTransform(1,0,0,1,0,0);
+      this.player.renderHUD(ctx, this.canvas.width, this.canvas.height);
+    }
+    
+    // Game Over screen (separate from playing/menu)
+    if (this.gameState === 'gameOver') {
+      ctx.fillStyle = 'rgba(0, 0, 0, 0.7)';
       ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
-      
-      ctx.fillStyle = '#fff';
-      ctx.font = 'bold 48px Arial';
-      ctx.textAlign = 'center';
-      ctx.fillText('PAUSED', this.canvas.width/2, this.canvas.height/2);
-      ctx.font = '24px Arial';
-      ctx.fillText('Press ESC to continue', this.canvas.width/2, this.canvas.height/2 + 50);
-      
-    } else if (this.gameState === 'gameOver') {
-      // Draw game over screen
-      ctx.fillStyle = 'rgba(0, 0, 0, 0.7)';  // darker overlay for game over
-      ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
-      
       ctx.fillStyle = '#ff0000';
       ctx.font = 'bold 48px Arial';
       ctx.textAlign = 'center';
@@ -248,28 +368,6 @@ export class Game {
       ctx.fillStyle = '#fff';
       ctx.font = '24px Arial';
       ctx.fillText(`Final Score: ${this.player.score}`, this.canvas.width/2, this.canvas.height/2 + 50);
-      
-    } else if (this.gameState === 'playing') {
-      // draw enemies
-      for (const e of this.enemies) {
-        if (this.enemySprite && this.enemySpriteLoaded) {
-          // Draw enemy sprite scaled to enemy size and centered on its position
-          ctx.drawImage(this.enemySprite, 
-            e.x - e.w/2,     // center horizontally
-            e.y - e.h/2,     // center vertically
-            e.w,             // use enemy width
-            e.h              // use enemy height
-          );
-        } else {
-          // Fallback to red rectangle if image not loaded
-          ctx.fillStyle = '#f00';
-          ctx.fillRect(e.x-e.w/2,e.y-e.h/2,e.w,e.h);
-        }
-      }
-      // draw bullets
-      this.bullets.render(ctx);
-      // draw player on top
-      this.player.render(ctx);
     }
   }
   _spawnEnemy() {
@@ -278,8 +376,8 @@ export class Game {
     const baseSpeed = 80;    // base horizontal speed
     const basePoints = 100;  // base points value
     
-    // Random scale between 0.8 (smaller) and 1.2 (bigger)
-    const scale = 0.8 + Math.random() * 0.4;
+  // Random scale between 0.8 (smaller) and 1.2 (bigger)
+  const scale = 0.8 + Math.random() * 0.4;
     
     // Speed adjustments
     const speedMultiplier = (2 - scale) * this.difficulty; // Faster with difficulty
@@ -287,21 +385,23 @@ export class Game {
     // Points multiplier based on size and difficulty
     const pointsMultiplier = (2 - scale) * this.difficulty;
     
-    // Find a safe spawn position
+    // Find a safe spawn position within logical height, with margin
+    const margin = 50;
     let safeY;
     let attempts = 0;
     const maxAttempts = 10;
-    
+    const minY = margin;
+    const maxY = this.baseHeight - margin;
     do {
-      safeY = 50 + Math.random() * 500;
+      safeY = minY + Math.random() * (maxY - minY);
       // Check if this position is far enough from other enemies
       const isSafe = this.enemies.every(e => Math.abs(e.y - safeY) > 50);
       if (isSafe) break;
       attempts++;
     } while (attempts < maxAttempts);
-    
+
     this.enemies.push({
-      x: 820,
+      x: this.baseWidth + 20, // spawn slightly off right edge in logical coords
       y: safeY,
       vx: -(baseSpeed + Math.random()*40) * speedMultiplier, // Base speed + difficulty scaling
       vy: Math.sin(this.gameTime + Math.random() * Math.PI) * 20, // Slight vertical movement
