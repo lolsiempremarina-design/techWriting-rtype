@@ -76,12 +76,16 @@ Per completare il PRD e indirizzare lo sviluppo, è necessario chiarire i seguen
 
 1.  **Fedeltà vs. Reinvenzione:**
     * **Domanda:** Vogliamo una riproduzione **1:1** dell'esperienza arcade (stile grafico, framerate, ecc.) o un **remake/tribute** con funzionalità di qualità della vita moderne (es. salvataggi, modalità addestramento) e/o miglioramenti grafici (es. grafica HD, effetti particellari moderni)?
+    <!-- TODO: Scegliere qui: [1] Replica 1:1  [2] Remake/Tribute con QoL (default: 2 - Remake). -->
 
 2.  **Scope del Contenuto:**
     * **Domanda:** L'obiettivo iniziale è riprodurre tutti gli **8 livelli** dell'originale arcade, o si prevede un **MVP (Minimum Viable Product)** con un numero inferiore di livelli (es. 4) per una prima *release*?
+    <!-- TODO: Indicare qui lo scope iniziale: [MVP-1] 1 livello  [MVP-4] 4 livelli  [Full] 8 livelli (default: MVP-1). -->
 
 3.  **Piattaforma Target:**
     * **Domanda:** Qual è la piattaforma di *release* primaria (PC, Console, Mobile)? Questo influenzerà il design dell'interfaccia utente (UI) e la scelta del motore di gioco.
+    <!-- TODO: Specificare piattaforma primaria (es: PC / Browser / Mobile). -->
 
 4.  **Sistema di Colonna Sonora:**
     * **Domanda:** La colonna sonora deve essere la **colonna sonora originale** (riarrangiata/remasterizzata) o deve essere composta una **nuova colonna sonora** ispirata all'originale?
+    <!-- TODO: Preferenza su colonna sonora: [Original] [Remaster] [New]. -->
