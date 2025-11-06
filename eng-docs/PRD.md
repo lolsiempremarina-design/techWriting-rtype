@@ -1,116 +1,116 @@
 # 🛸 R-Type: Product Requirement Document (PRD)
 
-| Dati di Identificazione e Processo | Valore |
+| Identification and Process Data | Value |
 | :--- | :--- |
-| **Titolo Documento** | R-Type: Product Requirement Document (PRD) |
-| **Identificativo Documento** | R-TYPE-PRD-V1.0 |
-| **Versione** | 1.0 (Draft Iniziale) |
-| **Data Emissione** | Novembre 2025 |
-| **Autore/Proprietario** | [Nome del Product Owner / Team Prodotto] |
-| **Riservatezza** | Interna (Commerciale) |
-| **Stato QA/Approvazione** | Non Ispezionato / Non Approvato (Draft) |
+| **Document Title** | R-Type: Product Requirement Document (PRD) |
+| **Document ID** | R-TYPE-PRD-V1.0 |
+| **Version** | 1.0 (Initial Draft) |
+| **Issue Date** | November 2025 |
+| **Author/Owner** | [Name of the Product Owner / Product Team] |
+| **Confidentiality** | Internal (Commercial) |
+| **QA/Approval Status** | Not Inspected / Not Approved (Draft) |
 
 ---
 
-## 1. Introduzione
+## 1. Introduction
 
-### 1.1. Scopo
-Questo documento definisce i requisiti, gli obiettivi e le funzionalità di alto livello per lo sviluppo di una riproduzione fedele del classico videogioco arcade **R-Type** di Irem (1987), un iconico *shoot 'em up* a scorrimento orizzontale (*Shmup*).
+### 1.1. Purpose
+This document defines the requirements, objectives, and high-level functionalities for the development of a faithful reproduction of the classic arcade video game **R-Type** by Irem (1987), an iconic side-scrolling shoot 'em up (**Shmup**).
 
-### 1.2. Visione del Prodotto
-Creare un'esperienza di gioco che catturi l'essenza, l'alto livello di sfida e le meccaniche distintive dell'originale R-Type, rivolgendosi sia ai fan nostalgici sia a una nuova generazione di giocatori.
+### 1.2. Product Vision
+To create a gaming experience that captures the essence, high challenge level, and distinctive mechanics of the original R-Type, targeting both nostalgic fans and a new generation of players.
 
-### 1.3. Pubblico Target
-* **Fan del Genere Shmup:** Giocatori che apprezzano i classici titoli *bullet hell* e *scroll-shooter*.
-* **Giocatori Retrogaming:** Utenti che cercano un'esperienza fedele o modernizzata di un classico arcade.
-* **Giocatori Esigenti:** Utenti che desiderano un alto livello di sfida e memorizzazione dei livelli.
+### 1.3. Target Audience
+* **Shmup Genre Fans:** Players who appreciate classic *bullet hell* and *scroll-shooter* titles.
+* **Retrogaming Players:** Users seeking a faithful or modernized experience of a classic arcade game.
+* **Demanding Players:** Users who desire a high level of challenge and level memorization.
 
 ---
 
-## 2. Obiettivi del Prodotto
+## 2. Product Goals
 
-| Goal ID | Descrizione | Criteri di Successo (KPI) |
+| Goal ID | Description | Success Criteria (KPI) |
 | :--- | :--- | :--- |
-| **G1** | **Fidelità Meccanica:** Riprodurre con precisione le meccaniche uniche di R-Type. | Implementazione funzionale ed equilibrata della meccanica **Force** e del **Wave Cannon**. |
-| **G2** | **Esperienza Arcade:** Mantenere l'alto livello di difficoltà e il senso di progressione e apprendimento insito nel *level design* originale. | Il tasso di completamento medio per un nuovo giocatore è coerente con quello del gioco arcade (alto livello di sfida). |
-| **G3** | **Funzionalità Core:** Garantire un'esperienza di gioco completa, inclusi tutti i livelli e i boss. | Inclusione di tutti gli 8 livelli e dei boss corrispondenti dell'originale R-Type. |
-| **G4** | **Reattività dei Controlli:** Garantire controlli fluidi e reattivi (essenziali per il genere). | Latenza di input impercettibile per un controllo preciso della navicella **R-9 Arrowhead**. |
+| **G1** | **Mechanical Fidelity:** Precisely reproduce R-Type's unique mechanics. | Functional and balanced implementation of the **Force** mechanic and the **Wave Cannon**. |
+| **G2** | **Arcade Experience:** Maintain the high difficulty level and the sense of progression and learning inherent in the original *level design*. | The average completion rate for a new player is consistent with that of the arcade game (high challenge level). |
+| **G3** | **Core Functionality:** Ensure a complete gameplay experience, including all levels and bosses. | Inclusion of all 8 levels and corresponding bosses from the original R-Type. |
+| **G4** | **Control Responsiveness:** Ensure smooth and responsive controls (essential for the genre). | Imperceptible input latency for precise control of the **R-9 Arrowhead** spacecraft. |
 
 ---
 
-## 3. Funzionalità di Alto Livello
+## 3. High-Level Features
 
 ### 3.1. Core Gameplay
-* **F1. Fixed Horizontal Scroll:** Il gioco deve procedere con uno scorrimento orizzontale fisso (da sinistra a destra).
-* **F2. R-9 Arrowhead Piloting:** Controllo della navicella **R-9 Arrowhead** con capacità di movimento a 360° all'interno dell'area di gioco.
-* **F3. Immediate Death:** La navicella viene distrutta da un singolo colpo nemico o contatto ambientale (con l'eccezione della **Force** quando è attaccata).
+* **F1. Fixed Horizontal Scroll:** The game must proceed with fixed horizontal scrolling (left to right).
+* **F2. R-9 Arrowhead Piloting:** Control of the **R-9 Arrowhead** spacecraft with 360° movement capability within the play area.
+* **F3. Immediate Death:** The spacecraft is destroyed by a single enemy shot or environmental contact (with the exception of the **Force** when attached).
 
-### 3.2. Sistema di Armi e Power-up
-Il sistema di armi deve essere basato su power-up rilasciati dai nemici (*Pods*).
+### 3.2. Weapon and Power-up System
+The weapon system must be based on power-ups released by enemies (*Pods*).
 * **F4. Wave Cannon:**
-    * Capacità di caricare l'arma principale tenendo premuto il pulsante di fuoco.
-    * Rilascio di un potente raggio dopo la carica, con danno proporzionale al tempo di carica.
-    * (Opzionale: Implementazione di una carica di secondo livello/massima carica).
+    * Ability to charge the main weapon by holding the fire button.
+    * Release of a powerful beam after charging, with damage proportional to the charge time.
+    * (Optional: Implementation of a second-level/maximum charge).
 * **F5. Force (Sphere Module):**
-    * Un modulo sferico indistruttibile che funge da arma aggiuntiva e scudo.
-    * Può essere **attaccato** alla prua o alla poppa dell'R-9.
-    * Può essere **staccato** per attaccare i nemici in modo indipendente e/o bloccare proiettili.
-* **F6. Laser Power-ups:** Implementazione di tre tipi principali di laser (ottenuti raccogliendo il power-up Laser):
-    * **Red Laser:** Raggi anti-aerei che possono trapassare i nemici.
-    * **Blue Laser:** Raggi riflessi/che rimbalzano sui muri (cruciali in certi livelli).
-    * **Yellow Laser:** Laser per attacco a terra o onde che si propagano orizzontalmente.
-* **F7. Other Power-ups:** Inclusione di power-up Missile, **Speed Up** (aumento della velocità) e *Bit* (piccoli satelliti difensivi/offensivi).
+    * An indestructible spherical module that serves as an additional weapon and shield.
+    * Can be **attached** to the bow or stern of the R-9.
+    * Can be **detached** to attack enemies independently and/or block projectiles.
+* **F6. Laser Power-ups:** Implementation of three main types of lasers (obtained by collecting the Laser power-up):
+    * **Red Laser:** Anti-air beams that can pierce enemies.
+    * **Blue Laser:** Reflected/bouncing beams off walls (crucial in certain levels).
+    * **Yellow Laser:** Ground-attack lasers or waves that propagate horizontally.
+* **F7. Other Power-ups:** Inclusion of Missile power-ups, **Speed Up** (speed increase), and *Bit* (small defensive/offensive satellites).
 
-### 3.3. Livelli e Nemici
-* **F8. Game Levels:** Piena implementazione di tutti gli 8 Stage caratteristici dell'originale, con i loro ambienti e pericoli unici (es. la sezione interna Bydo, tentacoli organici).
-* **F9. Biomechanical Aesthetic (Bydo Empire):** Design di nemici, ostacoli e boss in stile biomeccanico/alieno, che è un tratto distintivo di R-Type.
-* **F10. Boss Fights:** Ogni livello deve concludersi con un boss fight unico, che richiede l'apprendimento di uno specifico pattern di attacco e l'uso strategico della **Force** per sconfiggerlo.
+### 3.3. Levels and Enemies
+* **F8. Game Levels:** Full implementation of all 8 characteristic Stages of the original, with their unique environments and hazards (e.g., the internal Bydo section, organic tentacles).
+* **F9. Biomechanical Aesthetic (Bydo Empire):** Design of enemies, obstacles, and bosses in a biomechanical/alien style, which is a distinctive trait of R-Type.
+* **F10. Boss Fights:** Each level must conclude with a unique boss fight, requiring the learning of a specific attack pattern and the strategic use of the **Force** to defeat it.
 
-### 3.4. Interfaccia Utente e Sistema di Punteggio
-* **F11. HUD:** Visualizzazione chiara dei seguenti elementi: Punteggio, Vite/Navi Rimanenti (Lives), Indicatore di carica del **Wave Cannon**.
-* **F12. Scoring System:** Implementazione del calcolo del punteggio basato sulla distruzione dei nemici, con un sistema moltiplicatore per distruzioni multiple.
-* **F13. Continues & Game Over:** Opzione per utilizzare *Continues* limitati (o illimitati, come opzione).
-
----
-
-## 4. Requisiti Tecnici di Alto Livello
-
-* **T1. Game Engine:** **[IN COMPLETAZIONE]** Dipendente dalla piattaforma di destinazione - vedi Sezione 5.3.
-* **T2. Platform:** **[IN COMPLETAZIONE]** Piattaforma di rilascio principale - vedi Sezione 5.3.
-* **T3. Graphics:** *Pixel-perfect collision detection* per garantire la corretta funzionalità delle dinamiche di gioco.
-* **T4. Control:** Supporto per Gamepad/Tastiera con mappatura dei tasti personalizzabile per: Movimento (4 direzioni), Fire/Charge, **Force** Detach/Attach.
+### 3.4. User Interface and Scoring System
+* **F11. HUD:** Clear visualization of the following elements: Score, Remaining Lives, **Wave Cannon** charge indicator.
+* **F12. Scoring System:** Implementation of score calculation based on enemy destruction, with a multiplier system for multiple destructions.
+* **F13. Continues & Game Over:** Option to use limited (or unlimited, as an option) *Continues*.
 
 ---
 
-## 5. Domande Aperte e Assunzioni
+## 4. High-Level Technical Requirements
 
-Per finalizzare il PRD e guidare lo sviluppo, i seguenti punti necessitano di chiarimento:
+* **T1. Game Engine:** **[TO BE COMPLETED]** Dependent on the target platform - see Section 5.3.
+* **T2. Platform:** **[TO BE COMPLETED]** Primary release platform - see Section 5.3.
+* **T3. Graphics:** *Pixel-perfect collision detection* to ensure correct game dynamics functionality.
+* **T4. Control:** Support for Gamepad/Keyboard with customizable key mapping for: Movement (4 directions), Fire/Charge, **Force** Detach/Attach.
+
+---
+
+## 5. Open Questions and Assumptions
+
+To finalize the PRD and guide development, the following points need clarification:
 
 1.  **Fidelity vs. Reinvention:**
-    * **Domanda:** Si punta a una **riproduzione 1:1** dell'esperienza arcade (stile grafico, framerate, ecc.) o a un **remake/tribute** con moderne funzionalità *quality-of-life* (es. salvataggi, modalità allenamento) e/o miglioramenti grafici (es. grafica HD, effetti particellari moderni)?
+    * **Question:** Do we aim for a **1:1 reproduction** of the arcade experience (graphic style, framerate, etc.) or a **remake/tribute** with modern quality-of-life features (e.g., saves, training mode) and/or graphical enhancements (e.g., HD graphics, modern particle effects)?
 
-2.  **Ambito del Contenuto:**
-    * **Domanda:** L'obiettivo iniziale è riprodurre tutti gli **8 livelli** dell'arcade originale, o è previsto un **MVP (Minimum Viable Product)** con un numero inferiore di livelli (es. 4) per un *release* iniziale?
+2.  **Content Scope:**
+    * **Question:** Is the initial goal to reproduce all **8 levels** of the original arcade, or is an **MVP (Minimum Viable Product)** planned with a lower number of levels (e.g., 4) for an initial *release*?
 
-3.  **Piattaforma Target:**
-    * **Domanda:** Qual è la piattaforma di *release* primaria (PC, Console, Mobile)? Questo influenzerà il design dell'Interfaccia Utente (UI) e la scelta del *game engine*.
+3.  **Target Platform:**
+    * **Question:** What is the primary *release* platform (PC, Console, Mobile)? This will influence the User Interface (UI) design and the choice of the *game engine*.
 
-4.  **Sistema Colonna Sonora:**
-    * **Domanda:** La colonna sonora dovrà essere l'**original soundtrack** (riarrangiata/remastered) o dovrà essere composta una **nuova colonna sonora** ispirata all'originale?
+4.  **Soundtrack System:**
+    * **Question:** Should the soundtrack be the **original soundtrack** (rearranged/remastered) or should a **new soundtrack** be composed, inspired by the original?
 
 ---
 
-## 6. Glossario
+## 6. Glossary
 
-Questa sezione definisce i termini specialistici e gli acronimi utilizzati nel documento.
+This section defines the specialized terms and acronyms used in the document, in compliance with technical writing guidelines.
 
-| Termine | Definizione |
+| Term | Definition |
 | :--- | :--- |
-| **Bydo Empire** | La razza aliena/biomeccanica nemica che il giocatore affronta in R-Type. |
-| **Force** | Il modulo sferico di attacco e difesa indistruttibile che può essere attaccato o staccato dalla navicella del giocatore. È una meccanica centrale del gioco. |
-| **HUD** | **Head-Up Display**. L'interfaccia grafica visualizzata sullo schermo che fornisce al giocatore informazioni sullo stato (punteggio, vite, ecc.). |
-| **MVP** | **Minimum Viable Product** (Prodotto Minimo Viabile). Versione di un nuovo prodotto che include solo le funzionalità sufficienti per soddisfare i primi utilizzatori e fornire feedback per lo sviluppo futuro. |
-| **Pixel-perfect collision detection** | Una tecnica di rilevamento delle collisioni utilizzata nei videogiochi 2D in cui la collisione viene calcolata in base alla sovrapposizione esatta dei pixel degli oggetti, garantendo la precisione necessaria per gli *Shmup*. |
-| **R-9 Arrowhead** | Il nome del veicolo spaziale da combattimento pilotato dal giocatore. |
-| **Shmup** | Abbreviazione di **Shoot 'em up**. Sottogenere dei videogiochi d'azione in cui il giocatore pilota un veicolo sparando a ondate di nemici. |
-| **Wave Cannon** | L'arma principale della R-9, che può essere caricata per rilasciare un potente raggio energetico. |
+| **Bydo Empire** | The alien/biomechanical enemy race the player faces in R-Type. |
+| **Force** | The indestructible spherical attack and defense module that can be attached to or detached from the player's spacecraft. It is a central game mechanic. |
+| **HUD** | **Head-Up Display**. The graphical interface displayed on screen that provides the player with status information (score, lives, etc.). |
+| **MVP** | **Minimum Viable Product**. A version of a new product which includes only the features sufficient to satisfy early customers and provide feedback for future development. |
+| **Pixel-perfect collision detection** | A collision detection technique used in 2D video games where collision is calculated based on the exact pixel overlap of objects, ensuring the precision required for *Shmups*. |
+| **R-9 Arrowhead** | The name of the player-piloted combat spacecraft. |
+| **Shmup** | Short for **Shoot 'em up**. A subgenre of action video games where the player pilots a vehicle shooting at waves of enemies. |
+| **Wave Cannon** | The R-9's main weapon, which can be charged to release a powerful energy beam. |
