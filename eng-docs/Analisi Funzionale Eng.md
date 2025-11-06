@@ -3,6 +3,24 @@ The objective of this document is to describe the **user behavior, interactions,
 
 ---
 
+### 📚 Glossario dei Termini e Riferimenti Chiave
+
+| Termine | Descrizione | Riferimento |
+| :--- | :--- | :--- |
+| **R-9 Arrowhead** | La navicella spaziale controllata dal giocatore. | - |
+| **Wave Cannon** | Il potente attacco ad energia che si attiva con la carica (Hold Fire). | F4 |
+| **Force** | Il modulo sferico indistruttibile che funge da arma e scudo. | F5, O1 |
+| **Laser Power-up** | Oggetto collezionabile per cambiare/ciclicizzare il tipo di laser. | F6 |
+| **Speed Up** | Power-up per aumentare la velocità di movimento della navicella. | F7 |
+| **Boss** | Nemico di fine livello. | F10 |
+| **O2** | Obiettivo: Mantenere l'alto livello di sfida e fedeltà all'originale. | Obiettivo |
+| **O4** | Obiettivo: Performance (Movimento fluido e latenza impercettibile). | Obiettivo |
+| **T4** | Tasto: Input dedicato all'aggancio/sgancio della Force. | Task |
+| **F1** | Funzionale: Scorrimento orizzontale fisso. | Funzionale |
+| **F11** | Funzionale: Indicatore del moltiplicatore di punteggio su HUD. | Funzionale |
+
+---
+
 ### 1. User Behavior (Basic Interactions)
 
 Description of the actions the user can perform with the **R-9 Arrowhead** spaceship.
