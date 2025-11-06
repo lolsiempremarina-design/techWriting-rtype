@@ -193,3 +193,227 @@ consente un’esperienza coerente e stabile.
 La struttura a moduli ES6 rende il codice **manutenibile, estendibile e pronto** per una futura evoluzione verso un’architettura **ECS completa**.
 
 ---
+
+
+<!-- # 🧩 Analisi Tecnica – Gioco “R-Type” (Browser Edition) – Versione 3.0  
+
+---
+
+## 📘 1. Identificazione documento
+
+| Campo | Descrizione |
+|--------|-------------|
+| **Titolo** | Analisi Tecnica – Gioco “R-Type” (Browser Edition) |
+| **Versione** | 3.0 |
+| **Autore** | [Team di sviluppo R-Type Web] |
+| **Data** | Novembre 2025 |
+| **Tipo documento** | Documento tecnico di progetto |
+| **Destinatari** | Sviluppatori, manutentori, revisori tecnici |
+| **Confidenzialità** | Pubblica / educativa |
+| **Parole chiave** | Videogioco 2D, JavaScript, ECS, Canvas, WebGL, Sommerville |
+| **Copyright** | © 2025 – Progetto accademico R-Type Browser |
+
+---
+
+## 📖 2. Sommario
+1. Introduzione e scopo  
+2. Concetto operativo  
+3. Descrizione generale del sistema  
+4. Obiettivi tecnici e requisiti  
+5. Architettura software e componenti  
+6. Documentazione di processo  
+7. Documentazione di prodotto  
+   - Manuale utente  
+   - Manuale tecnico  
+   - Guida amministratore/manutentore  
+8. Standard e qualità documentale  
+9. Glossario  
+10. Riferimenti bibliografici  
+
+---
+
+## 🧭 3. Introduzione e scopo
+
+Questo documento descrive l’analisi tecnica, l’architettura e la gestione del progetto *R-Type (Browser Edition)*, un videogioco **2D side-scrolling shooter** sviluppato in **JavaScript** e **HTML5 Canvas**, ispirato al classico *R-Type (Irem, 1987)*.  
+
+Il documento rispetta le linee guida di *Ian Sommerville* per la documentazione software, con l’obiettivo di fornire un riferimento tecnico completo per sviluppo, manutenzione e utilizzo.
+
+---
+
+## 🚀 4. Concetto operativo del sistema
+
+Il sistema simula un ambiente spaziale 2D dove il giocatore controlla una navicella armata, affrontando ondate di nemici e boss di fine livello.  
+Il gioco opera interamente nel browser, con compatibilità multi-dispositivo e supporto per tastiera o controller.  
+
+### Funzioni principali:
+- Movimento libero su piano 2D (logica di gioco indipendente dal rendering).  
+- Sistema di proiettili e arma caricabile.  
+- Gestione della “Force Unit” (modulo orbitante agganciabile).  
+- Gestione punteggio, vite e barra di carica.  
+- Rendering ottimizzato (Canvas/WebGL).  
+
+### Utenti previsti:
+- **Giocatori finali**: usufruiscono del gioco tramite browser.  
+- **Sviluppatori e manutentori**: intervengono sul codice, modificano livelli, sprite, logica.  
+- **Amministratori di sistema**: gestiscono versioni, pubblicazione e debugging.  
+
+---
+
+## 🧩 5. Descrizione generale del sistema
+
+### Architettura generale
+Il sistema è suddiviso in moduli principali che corrispondono a componenti logiche del motore di gioco:
+
+| Modulo | Descrizione |
+|--------|-------------|
+| **GameEngine** | Gestisce il ciclo di gioco (update/render) e lo stato generale. |
+| **Input** | Cattura gli eventi da tastiera e controller. |
+| **Player** | Gestisce posizione, movimento, fuoco e stato vitale. |
+| **Force** | Implementa il modulo orbitante, con logica di attacco e aggancio. |
+| **BulletManager** | Gestisce il pool di proiettili attivi per efficienza. |
+| **LevelManager** | Definisce ondate nemiche e progressione. |
+| **UI/HUD** | Visualizza punteggi, vite e barra di carica. |
+
+### Flusso operativo
+1. Inizializzazione del canvas e risorse.  
+2. Ciclo `update(dt)` per logica e fisica.  
+3. Ciclo `render(ctx)` per visualizzazione.  
+4. Gestione input utente e collisioni.  
+5. Aggiornamento HUD e punteggio.
+
+---
+
+## 🎯 6. Obiettivi tecnici e requisiti
+
+| Categoria | Requisito |
+|------------|-----------|
+| **Prestazioni** | 60 FPS costanti su PC e dispositivi mobili. |
+| **Compatibilità** | Supporto per browser moderni (Chrome, Firefox, Safari, Edge). |
+| **Scalabilità** | Sistema modulare per nuovi livelli, armi, nemici. |
+| **Manutenibilità** | Codice pulito e separato in moduli. |
+| **Efficienza** | Uso di *object pooling* e *spatial grid*. |
+| **Portabilità** | Nessuna dipendenza esterna non standard. |
+
+---
+
+## 🧱 7. Architettura software e componenti
+
+### Paradigma architetturale
+Sistema **ibrido OOP → ECS (Entity Component System)**, in evoluzione verso architettura componibile.
+
+### Componenti principali
+- **EntityManager**: gestore entità future (ECS).  
+- **PhysicsSystem**: aggiorna posizioni e velocità.  
+- **RenderSystem**: disegna sprite ordinati per layer.  
+- **CollisionSystem**: rileva e gestisce impatti.  
+- **AISystem**: coordina movimenti e attacchi dei nemici.  
+
+### Interfacce
+Ogni modulo espone metodi standard:
+```js
+update(dt)
+render(ctx)
+reset()
+```
+
+---
+
+## 🧾 8. Documentazione di processo
+
+### 8.1 Piani e stime
+- Ciclo agile con sprint settimanali.  
+- Obiettivo: implementazione completa del livello 1 in 4 settimane.  
+
+### 8.2 Standard di sviluppo
+- **Linguaggio:** JavaScript (ES6).  
+- **Formattazione:** ESLint + Prettier.  
+- **Versionamento:** GitHub / GitFlow.  
+
+### 8.3 Controllo qualità
+- Testing manuale + simulazione collisioni.  
+- Profilazione con Chrome DevTools.  
+- Validazione 60 FPS medi su laptop.  
+
+---
+
+## 🕹️ 9. Documentazione di prodotto
+
+### 9.1 Manuale utente
+#### Introduzione
+Il giocatore controlla la navicella spaziale tramite tastiera o controller USB.  
+L’obiettivo è distruggere i nemici e sopravvivere il più a lungo possibile.
+
+#### Comandi
+| Azione | Tasto |
+|--------|-------|
+| Muovi | Frecce o WASD |
+| Spara | Z / X / C |
+| Carica colpo | Spazio |
+| Forza (aggancia/scollega) | F |
+
+#### Suggerimenti
+- Caricare il colpo per danni maggiori.  
+- Evitare di restare fermi: i nemici arrivano da più direzioni.  
+
+### 9.2 Manuale tecnico
+#### Struttura del codice
+Organizzato in moduli ES6:
+```
+/main.js
+/game.js
+/player.js
+/force.js
+/bulletManager.js
+/input.js
+```
+#### Pooling e performance
+- I proiettili non vengono distrutti ma riutilizzati.  
+- La forza (`Force`) segue la logica indipendente dal player.  
+
+### 9.3 Guida amministratore / manutentore
+#### Installazione
+1. Copiare la cartella del progetto su server statico o locale.  
+2. Aprire `index.html` nel browser.  
+3. Verificare il percorso corretto per `img/navicella.png`.  
+
+#### Debug e manutenzione
+- Usare `console.log` per tracciare eventi di gioco.  
+- Per aggiornamenti: controllare compatibilità di `update(dt)` e `render(ctx)`.  
+- Salvare versioni in Git prima di ogni modifica.  
+
+#### Configurazione
+- Parametri logici di gioco nel costruttore `Player` (`logicalWidth`, `logicalHeight`).  
+- Modificabili per adattarsi a diverse risoluzioni.  
+
+---
+
+## 📏 10. Standard e qualità documentale
+
+Il presente documento segue i principi di Sommerville (2001):
+- **Chiarezza:** frasi brevi, voce attiva, uso di elenchi.  
+- **Struttura:** sezioni numerate e indipendenti.  
+- **Uniformità:** stile coerente e terminologia costante.  
+- **Accessibilità:** compatibile con stampa, PDF e lettura su schermo.  
+
+---
+
+## 🧠 11. Glossario
+
+| Termine | Descrizione |
+|----------|-------------|
+| **ECS** | Entity-Component-System, architettura modulare per giochi. |
+| **Pooling** | Riutilizzo di oggetti per ridurre allocazioni di memoria. |
+| **HUD** | Head-Up Display, interfaccia di gioco (vite, punteggio, carica). |
+| **Force** | Modulo orbitante che può attaccarsi alla nave principale. |
+| **Canvas** | Elemento HTML5 per il rendering 2D. |
+
+---
+
+## 📚 12. Riferimenti bibliografici
+
+- Sommerville, I. *Software Documentation*, Lancaster University, 2001.  
+- Irem Corp. *R-Type* (arcade), 1987.  
+- Mozilla Developer Network (MDN): *Canvas API Reference*.  
+- IEEE Std 1063-2001: *Standard for Software User Documentation*.  
+
+--- -->
