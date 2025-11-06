@@ -1,185 +1,195 @@
-# 🧩 **Analisi Tecnica – Gioco “R-Type” (versione moderna / browser)**
-
-
-## 1️⃣ **Descrizione generale del sistema**
-
-Il progetto consiste nello sviluppo di un videogioco 2D di tipo **side-scroll shooter**, ispirato a *R-Type* (Irem, 1987).  
-Il giocatore controlla una navicella spaziale che avanza automaticamente verso destra, affrontando ondate di nemici, ostacoli e boss di fine livello.  
-L’obiettivo principale è sopravvivere il più a lungo possibile distruggendo i nemici e accumulando punti.
+# 🧩 Analisi Tecnica – Progetto “R-Type Browser Edition”
 
 ---
 
-## 2️⃣ **Obiettivi tecnici**
+## 1️⃣ Descrizione generale
 
-- **Prestazioni elevate** (≥60 FPS su PC e mobile).  
-- **Compatibilità multipiattaforma** (browser, PC, tablet).  
-- **Struttura modulare** per facilitare aggiornamenti (nuovi livelli, armi, nemici).  
-- **Basso consumo di memoria**: gestione efficiente di sprite e proiettili.  
-- **Manutenibilità e riusabilità** del codice (architettura pulita).  
+Il progetto è un **videogioco 2D di tipo side-scroll shooter**, ispirato al classico *R-Type* (Irem, 1987), sviluppato in **JavaScript moderno (ES6)** ed eseguibile interamente nel browser.  
+Il giocatore controlla una navicella spaziale che affronta ondate di nemici generati dinamicamente, utilizzando armi standard, colpi caricati e un modulo “Force” agganciabile o indipendente.
 
----
-
-## 3️⃣ **Scelte architetturali**
-
-| Aspetto | Scelta | Motivazione |
-|----------|--------|--------------|
-| **Paradigma** | Entity-Component System (ECS) | Permette di gestire un grande numero di entità (nemici, proiettili, effetti) con performance elevate. |
-| **Ciclo di gioco** | *Fixed timestep* per logica + *variable render* | Garantisce coerenza fisica anche con FPS variabile. |
-| **Gestione memoria** | *Object Pooling* per oggetti ricorrenti | Riduce il carico del Garbage Collector (GC). |
-| **Collision Detection** | *Uniform Spatial Grid* (hash grid) | Bilancia semplicità e prestazioni, adatto a giochi 2D con molti proiettili. |
-| **Asset Management** | Caricamento asincrono e caching in RAM | Minimizza ritardi durante il gameplay. |
-| **Architettura logica** | MVC semplificato (Model = ECS, View = Render, Controller = Input) | Favorisce la separazione delle responsabilità. |
+Il motore di gioco è basato su **HTML5 Canvas 2D**, con una gestione logica indipendente dalla risoluzione reale dello schermo e con supporto completo per la modalità **schermo intero**.
 
 ---
 
-## 4️⃣ **Stack tecnologico**
+## 2️⃣ Obiettivi del progetto
 
-### ⚙️ **Frontend (Core di gioco)**
-| Tecnologia | Funzione | Motivazione |
-|-------------|-----------|--------------|
-| **HTML5 Canvas / WebGL** | Rendering 2D | Alta compatibilità browser e buone prestazioni. |
-| **JavaScript / TypeScript** | Logica di gioco | Linguaggio nativo per browser, tipizzazione utile con TypeScript. |
-| **PixiJS** *(opzionale)* | Wrapper WebGL per sprite batching | Aumenta le performance e semplifica la gestione delle texture. |
-| **WebAudio API** | Gestione suoni ed effetti | Controllo preciso di volume, panning e mixaggio. |
-| **Vite / Webpack** | Build e bundling | Ottimizza il caricamento e la distribuzione. |
-
-### 🗄️ **Backend (facoltativo)**
-| Servizio | Descrizione |
-|-----------|--------------|
-| Node.js + Express | Leaderboard online o salvataggi remoti |
-| MongoDB / SQLite | Archivio punteggi e utenti |
-| REST API o WebSocket | Comunicazione client-server |
-
-*(Nella versione single-player locale, non è necessario il backend.)*
+- Riprodurre la meccanica di gioco di *R-Type* in ambiente web moderno.  
+- Garantire prestazioni fluide (60 FPS) su PC e dispositivi mobili.  
+- Struttura modulare e facilmente estendibile per futuri aggiornamenti.  
+- Ottimizzare l’uso della memoria e ridurre al minimo il carico del Garbage Collector.  
+- Offrire un’esperienza utente coerente e scalabile su qualsiasi risoluzione.  
 
 ---
 
-## 5️⃣ **Struttura logica del software**
+## 3️⃣ Architettura generale
 
-### 📚 **Moduli principali**
-1. **GameEngine**  
-   - Gestisce *game loop*, aggiornamenti, render, e stato generale.
-2. **EntityManager (ECS)**  
-   - Gestisce entità e componenti (Transform, Sprite, Collider, AI, ecc.).
-3. **Systems**  
-   - `PhysicsSystem` – aggiorna posizioni e velocità.  
-   - `RenderSystem` – disegna sprite ordinati per layer.  
-   - `CollisionSystem` – rileva e gestisce collisioni.  
-   - `AISystem` – aggiorna i pattern di movimento nemici.  
-   - `InputSystem` – gestisce input tastiera/gamepad/touch.
-4. **ResourceManager**  
-   - Carica texture, suoni e file JSON dei livelli.
-5. **LevelManager**  
-   - Controlla progressione, spawn di nemici e boss.
-6. **UIManager**  
-   - Gestisce HUD, menù e schermate di stato (Game Over, Pause, ecc.).
+Il progetto adotta un’architettura **OOP modulare**, con classi indipendenti e responsabilità chiaramente definite.  
+È predisposto per una futura transizione verso un’architettura **ECS (Entity-Component-System)**.
+
+| Componente | Funzione | Dipendenze |
+|-------------|-----------|-------------|
+| `Game` | Gestisce il ciclo di gioco, logica, rendering e stati globali | Tutti gli altri moduli |
+| `Player` | Gestisce la navicella del giocatore (movimento, fuoco, “Force”) | `Input`, `BulletManager`, `Force` |
+| `BulletManager` | Sistema di *object pooling* per la gestione dei proiettili | Nessuna |
+| `Force` | Modulo orbitante agganciabile o indipendente | `Player` |
+| `Input` | Rilevamento e gestione dell’input da tastiera | Eventi browser |
+| `main.js` | Entry point del gioco, inizializzazione canvas e fullscreen | `Game` |
 
 ---
 
-## 6️⃣ **Strutture dati**
+## 4️⃣ Stack tecnologico
 
-### ✴️ **Esempio di entità (ECS)**  
-```json
-{
-  "id": 102,
-  "components": {
-    "Transform": { "x": 120, "y": 240 },
-    "Velocity": { "vx": 100, "vy": 0 },
-    "Sprite": { "atlas": "ship.png", "frame": "idle" },
-    "Collider": { "w": 32, "h": 16, "type": "AABB" },
-    "Health": { "hp": 3, "max": 3 },
-    "Weapon": { "type": "laser", "cooldown": 0.2 }
-  }
-}
-```
-
-### ⚙️ **Level data (JSON)**
-```json
-{
-  "level": "1-1",
-  "background": "bg_space.png",
-  "scrollSpeed": 100,
-  "waves": [
-    { "time": 2, "enemy": "fighter", "x": 900, "y": 120, "pattern": "sine" },
-    { "time": 5, "enemy": "turret", "x": 950, "y": 70 }
-  ],
-  "boss": { "spawnTime": 90, "type": "mothership" }
-}
-```
+| Tecnologia | Utilizzo |
+|-------------|-----------|
+| **HTML5 Canvas** | Rendering 2D principale |
+| **JavaScript (ES6 Modules)** | Logica di gioco, architettura modulare |
+| **Web APIs** | Input, animazioni, gestione fullscreen |
+| **CSS / DOM** | Overlay e interfaccia utente |
+| *(Opzionale)* WebAudio API | Gestione effetti sonori futuri |
 
 ---
 
-## 7️⃣ **Algoritmi principali**
+## 5️⃣ Struttura dei moduli principali
 
-### 🚀 **Game Loop**
-Usa `requestAnimationFrame()` per sincronizzare con il refresh rate del display.  
-Divide logica e rendering per stabilità:
+### 🕹️ `Player.js`
+- Gestisce posizione, movimento e limiti dello spazio logico (1280×720).  
+- Implementa due modalità di fuoco:
+  - **Fuoco rapido** (tasti Z/X/C).  
+  - **Colpo caricato** (tasto SPACE) con potenza variabile e raffiche laterali.  
+- Tiene traccia di vite, punteggio e stato di carica.  
+- Si integra con `Force` e `BulletManager`.  
+- Effettua il rendering della navicella (`img/navicella.png`) e dell’HUD (vite, punteggio, barra di carica).
+
+### 💥 `BulletManager.js`
+- Gestisce i proiettili attraverso un sistema di **object pooling** (100 oggetti preallocati).  
+- Controlla spawn, aggiornamento e rendering.  
+- Rimuove automaticamente i proiettili fuori dallo spazio logico (+ margine).  
+- Mantiene prestazioni costanti anche con molti colpi attivi.
+
+### 🌀 `Force.js`
+- Modulo “satellite” della navicella, **agganciabile o distaccabile**.  
+- Quando è distaccato si muove autonomamente in avanti, seguendo parzialmente la posizione verticale del giocatore.  
+- Integra un **cooldown di 0.2s** per evitare attivazioni multiple.  
+- Attualmente non spara, ma il codice è predisposto per future estensioni (fuoco o scudo difensivo).
+
+### 🎮 `Input.js`
+- Registra la pressione e il rilascio dei tasti tramite `Set`.  
+- API semplice e diretta: `isDown(code)` restituisce lo stato di un tasto.  
+- Supporta layout multipli (WASD, frecce direzionali, ZXC, SPACE, F, ESC).
+
+### 🧠 `Game.js`
+- È il cuore del motore di gioco:
+  - Gestisce il **ciclo principale** con *fixed timestep* (1/60s).  
+  - Implementa stati: `menu`, `playing`, `paused`, `gameOver`.  
+  - Calcola proporzioni e scala logica in base alla finestra del browser.  
+  - Controlla la generazione dinamica dei nemici e la difficoltà crescente.  
+  - Esegue il controllo delle **collisioni AABB** tra proiettili, nemici e giocatore.  
+  - Gestisce la pausa, il Game Over e la transizione al menu principale.  
+  - Disegna l’HUD e l’interfaccia in coordinate schermo.
+
+### 🖥️ `main.js`
+- Entry point del progetto.  
+- Inizializza il canvas, crea l’overlay e l’istanza di `Game`.  
+- Implementa il sistema di **fullscreen** (tasto `F` o pulsante dedicato).  
+- Adatta dinamicamente la visualizzazione, mantenendo il buffer logico costante.  
+- Ripristina le dimensioni originali e la gerarchia grafica all’uscita dal fullscreen.
+
+---
+
+## 6️⃣ Gestione grafica e logica
+
+### 🔲 Coordinate logiche
+Tutta la logica si svolge su una **griglia logica 1280×720**, indipendente dalle dimensioni reali del canvas.  
+Il sistema calcola automaticamente `scale` e `offset` per mantenere proporzioni corrette su qualsiasi schermo.
+
+### 🎨 Rendering
+- Tutti gli elementi vengono disegnati in coordinate logiche, poi scalati sul canvas.  
+- I proiettili sono disegnati con `fillRect` per massima efficienza.  
+- Gli sprite sono caricati in modo asincrono con un flag `spriteLoaded`.  
+- L’HUD è disegnato in coordinate schermo, quindi indipendente dallo scaling logico.
+
+---
+
+## 7️⃣ Algoritmi principali
+
+### ⚙️ Ciclo di gioco
 ```js
 while (accumulator >= FIXED_DT) update(FIXED_DT);
 render(interpolation);
 ```
+Garantisce coerenza della fisica anche con FPS variabili.
 
-### 💥 **Collision Detection**
-- Ogni frame, aggiorna la griglia spaziale.  
-- Controlla collisioni solo tra entità vicine nella stessa cella.  
-- Gestisce eventi: `onHit()`, `onDestroy()`, `spawnExplosion()`.
+### 🎯 Collisioni AABB
+```js
+x1 < x2 + w2 && x1 + w1 > x2 && y1 < y2 + h2 && y1 + h1 > y2
+```
+Utilizzata per rilevare le collisioni tra proiettili, nemici e il giocatore.
 
-### 🎯 **AI Pattern System**
-- Ogni nemico segue un pattern predefinito (JSON).  
-- Le azioni base: `moveTo`, `shoot`, `wait`, `loop`.  
-- Sistema interprete che esegue i comandi frame-by-frame.
-
----
-
-## 8️⃣ **Requisiti hardware / software**
-
-| Categoria | Requisiti minimi |
-|------------|------------------|
-| CPU | Dual-core 2 GHz |
-| RAM | 2 GB |
-| GPU | Supporto WebGL 1.0 o superiore |
-| Browser | Chrome / Firefox / Edge / Safari |
-| OS | Windows / macOS / Linux / Android / iOS |
+### 👾 Generazione dei nemici
+- I nemici vengono generati a intervalli decrescenti (`spawnInterval`).  
+- La difficoltà aumenta ogni 45 secondi, fino a un massimo di livello 5.  
+- Ogni nemico ha dimensioni, velocità e punteggio proporzionali alla difficoltà.
 
 ---
 
-## 9️⃣ **Analisi delle performance**
+## 8️⃣ Gestione UI e Stati di gioco
 
-| Area | Criticità | Soluzione tecnica |
-|------|------------|------------------|
-| Molti proiettili simultanei | Creazione/GC di oggetti | Implementazione di *object pooling* |
-| Collisioni multiple | Costo O(n²) | Spatial grid o quadtree |
-| Rendering di molti sprite | Troppi draw call | Sprite batching (PixiJS o atlante sprite) |
-| Lag su dispositivi mobili | Overdraw su Canvas | Culling + frame skipping dinamico |
-
----
-
-## 🔟 **Scalabilità e manutenzione**
-
-- Codice suddiviso in moduli indipendenti (ECS, AI, Render, ecc.).  
-- I livelli e i nemici possono essere definiti in file JSON senza ricompilazione.  
-- Il motore grafico e fisico può essere riutilizzato per altri giochi 2D.  
-- Possibilità futura: multiplayer cooperativo via WebSocket.
+| Stato | Descrizione |
+|--------|-------------|
+| **Menu** | Mostra titolo, pulsante “Start” e comandi di gioco. |
+| **Playing** | Stato attivo con logica di gioco e HUD visibile. |
+| **Paused** | Overlay trasparente con testo “PAUSED”, ripresa con ESC. |
+| **GameOver** | Schermata con punteggio finale e ritorno automatico al menu. |
 
 ---
 
-## 11️⃣ **Rischi e mitigazioni**
+## 9️⃣ Analisi delle performance
+
+| Area | Ottimizzazione presente | Miglioramenti possibili |
+|-------|--------------------------|---------------------------|
+| Proiettili | Object pooling (100 istanze) | Pool dinamico o espandibile |
+| Collisioni | Ciclo doppio O(n²) | Spatial Hash Grid o Quadtree |
+| Rendering | Canvas batching | Adozione PixiJS/WebGL |
+| Resize dinamico | Scala uniforme | Debounce del resize event |
+| Memoria | Nessuna creazione di oggetti a runtime | Pooling esteso a nemici |
+
+---
+
+## 🔟 Scalabilità e sviluppi futuri
+
+- Adozione completa dell’architettura **ECS** (EntityManager, Systems, Components).  
+- Introduzione di un **LevelManager** con dati di livello in JSON.  
+- Aggiunta di un **SoundManager** basato su WebAudio API.  
+- Estensione del modulo `Force` con capacità di fuoco o difesa.  
+- Sistema di **particelle ed esplosioni** per effetti visivi.  
+- Integrazione di controlli touch per dispositivi mobili.  
+- Leaderboard online e modalità cooperativa via WebSocket/Node.js.
+
+---
+
+## 11️⃣ Rischi e mitigazioni
 
 | Rischio | Impatto | Mitigazione |
 |----------|----------|-------------|
-| Bassa performance su mobile | Medio | Implementare “low graphics mode” |
-| Gestione asset complessa | Basso | Caching e preloading asincrono |
-| Complessità ECS | Medio | Adottare ECS minimale o ibrido OOP |
-| Sincronizzazione audio-video | Basso | Gestire audio con WebAudio e clock condiviso |
+| Prestazioni ridotte su mobile | Medio | Modalità “low graphics” con culling e pooling aggressivo |
+| Troppi oggetti simultanei | Medio | Espansione del sistema di pooling |
+| Input multiplo non gestito | Basso | Debounce e priorità ai comandi principali |
+| Desincronizzazione audio-video | Basso | Clock unificato basato su `gameTime` |
+| Distorsione in fullscreen | Basso | Blocco aspect-ratio e cropping dinamico |
 
 ---
 
-## 12️⃣ **Conclusione**
+## 12️⃣ Conclusione
 
-L’analisi tecnica mostra che lo sviluppo di *R-Type* in ambiente web è **tecnicamente fattibile e sostenibile**.  
-Con l’uso di un’architettura **ECS + Canvas/WebGL**, e pratiche ottimizzazioni (pooling, spatial hashing, batching), è possibile ottenere:
-- prestazioni fluide anche su hardware limitato;  
-- codice modulare, estendibile e riutilizzabile;  
-- facilità di deploy su qualsiasi browser moderno.
+Il progetto **“R-Type Browser Edition”** è tecnicamente solido, fluido e modulare.  
+L’implementazione attuale dimostra una buona separazione tra logica, input e rendering, garantendo prestazioni elevate anche su hardware limitato.
+
+L’utilizzo di:
+- *Object pooling* per i proiettili,  
+- logica indipendente dalla risoluzione,  
+- ciclo di gioco a tempo fisso e rendering scalato,  
+
+consente un’esperienza coerente e stabile.  
+La struttura a moduli ES6 rende il codice **manutenibile, estendibile e pronto** per una futura evoluzione verso un’architettura **ECS completa**.
 
 ---
