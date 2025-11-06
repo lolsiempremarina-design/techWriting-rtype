@@ -5,19 +5,19 @@ The objective of this document is to describe the **user behavior, interactions,
 
 ### 📚 Glossario dei Termini e Riferimenti Chiave
 
-| Termine | Descrizione | Riferimento |
+| Term | Description | Reference |
 | :--- | :--- | :--- |
-| **R-9 Arrowhead** | La navicella spaziale controllata dal giocatore. | - |
-| **Wave Cannon** | Il potente attacco ad energia che si attiva con la carica (Hold Fire). | F4 |
-| **Force** | Il modulo sferico indistruttibile che funge da arma e scudo. | F5, O1 |
-| **Laser Power-up** | Oggetto collezionabile per cambiare/ciclicizzare il tipo di laser. | F6 |
-| **Speed Up** | Power-up per aumentare la velocità di movimento della navicella. | F7 |
-| **Boss** | Nemico di fine livello. | F10 |
-| **O2** | Obiettivo: Mantenere l'alto livello di sfida e fedeltà all'originale. | Obiettivo |
-| **O4** | Obiettivo: Performance (Movimento fluido e latenza impercettibile). | Obiettivo |
-| **T4** | Tasto: Input dedicato all'aggancio/sgancio della Force. | Task |
-| **F1** | Funzionale: Scorrimento orizzontale fisso. | Funzionale |
-| **F11** | Funzionale: Indicatore del moltiplicatore di punteggio su HUD. | Funzionale |
+| **R-9 Arrowhead** | The player-controlled spaceship. | - |
+| **Wave Cannon** | The powerful energy attack activated by charging (Hold Fire). | F4 |
+| **Force** | The indestructible spherical module that serves as both a weapon and a shield. | F5, O1 |
+| **Laser Power-up** | Collectible item to change/cycle the type of laser. | F6 |
+| **Speed Up** | Power-up to increase the spaceship's movement speed. | F7 |
+| **Boss** | End-of-level enemy. | F10 |
+| **O2** | Objective: Maintain the high level of challenge and fidelity to the original. | Objective |
+| **O4** | Objective: Performance (Fluid movement and imperceptible latency). | Objective |
+| **T4** | Key/Button: Input dedicated to attaching/detaching the Force. | Task |
+| **F1** | Functional: Fixed horizontal scrolling. | Functional |
+| **F11** | Functional: Score multiplier indicator on the HUD. | Functional |
 
 ---
 
